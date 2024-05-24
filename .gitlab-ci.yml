@@ -1,0 +1,39 @@
+build-app:
+  stage: build
+  script:
+    - composer update
+    - composer install
+    - composer dump-autoload
+    - echo "Build Ok!!"
+
+test-contact-logics:
+  stage: test
+  script:
+    - ./vendor/bin/phpunit tests/contactTests --testdox
+    - echo "All tests passed!"
+
+test-util-functions:
+  stage: test
+  script:
+    - ./vendor/bin/phpunit tests/utilsTests --testdox
+    - echo "All tests passed!"
+
+deploy-prod-update-files:
+  stage: deploy
+  script:
+    - chmod 400 $FILE_UBUNTU_RUNNER
+    - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "cd /var/www/html; git pull"
+    - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "chmod -R u+w /var/www/html"
+    - echo "Files Updated"
+  environment: production
+
+deploy-prod-update-env:
+  stage: deploy
+  script:
+    - chmod 400 $FILE_UBUNTU_RUNNER
+    - chmod 400 $FILE_ENV
+    - scp -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" $FILE_ENV ubuntu@web.easycontacts.com:/var/www/html/.env
+    - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "chmod 644 /var/www/html/.env"
+    - echo "Deploy Ok!"
+  environment: production
+

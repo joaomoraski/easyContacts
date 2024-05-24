@@ -1,0 +1,16 @@
+{
+  "autoload": {
+    "psr-4": {
+      "controllers\\": "controllers/",
+      "model\\": "model/",
+      "config\\": "config/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.1",
+    "mockery/mockery": "^1.6"
+  },
+  "require": {
+    "ext-pdo": "*"
+  }
+}
