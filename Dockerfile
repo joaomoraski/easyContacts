@@ -36,9 +36,9 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN a2enmod rewrite ssl \
     && a2ensite default-ssl \
     && sed -i 's|SSLCertificateFile.*|SSLCertificateFile /etc/ssl/certs/easycontacts.crt|' /etc/apache2/sites-available/default-ssl.conf \
-    && sed -i 's|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/ssl/private/easycontacts.key|' /etc/apache2/sites-available/default-ssl.conf \
+    && sed -i 's|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/ssl/private/easycontacts.key|' /etc/apache2/sites-available/default-ssl.conf 
 
-    # Exponha as portas 80 e 443
+# Exponha as portas 80 e 443
 EXPOSE 80 443
 
 # Comando para iniciar o Apache
