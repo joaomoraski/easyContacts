@@ -3,7 +3,7 @@ stages:
   - test
   - deploy
 
-# If i understand right, this make the docker more faster
+# If I understand right, this make the docker more faster
 variables:
   DOCKER_DRIVER: overlay2
 
