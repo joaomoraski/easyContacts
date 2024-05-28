@@ -3,28 +3,36 @@ stages:
   - test
   - deploy
 
+# If i understand right, this make the docker more faster
 variables:
   DOCKER_DRIVER: overlay2
 
+# Running the docker image
 services:
   - docker:dind
 
+# Execute the docker login before
 before_script:
   - docker login -u joaomoraski -p $DOCKER_HUB_ACCESS_TOKEN
 
+# Build the docker image
 build-app:
   stage: build
   script:
+    - composer update
+    - composer install
+    - composer dump-autoload
+    - echo "Composer update/install/dump-autoload Ok!✅"
     - docker build -t joaomoraski/easycontacts:latest .
-    - echo "Build Ok!!"
+    - echo "Docker Image Build Ok!✅"
     - docker push joaomoraski/easycontacts:latest
+    - echo "Docker Push Ok!✅"
 
 unit-tests:
   stage: test
   script:
-      - docker run --rm joaomoraski/easycontacts:latest ./vendor/bin/phpunit tests --testdox
-      - echo "All tests passed!"
-
+    - docker run --rm joaomoraski/easycontacts:latest ./vendor/bin/phpunit tests --testdox
+    - echo "All tests passed!✅"
 
 deploy-prod:
   stage: deploy
@@ -32,7 +40,8 @@ deploy-prod:
     - chmod 400 $FILE_UBUNTU_RUNNER
     - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "docker login -u joaomoraski -p $DOCKER_HUB_ACCESS_TOKEN"
     - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "docker pull joaomoraski/easycontacts:latest"
+    - echo "Docker pull on server Ok!✅"
     - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "docker stop easycontacts || true && docker rm easycontacts || true"
     - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "docker run -d --name easycontacts -p 80:80 -p 443:443 joaomoraski/easycontacts:latest"
-    - echo "Deploy Ok!"
+    - echo "Docker deploy on server Ok!✅"
   environment: production

@@ -1,7 +1,7 @@
-# Use a imagem base do PHP 8.3 com Apache
+# Get the docker hub image with apache
 FROM php:8.3-apache
 
-# Instale as extensões PHP necessárias
+# Install some dependencies to run the project with docker
 RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libcurl4-openssl-dev \
@@ -16,35 +16,35 @@ RUN apt-get update && apt-get install -y \
     pdo_mysql \
     gd
 
+
+# send env variables
 ENV DATABASE_HOST="sql.easycontacts.com"
 ENV DATABASE_USER="moraski"
 ENV DATABASE_PASSWORD="moraski"
 ENV DATABASE_NAME="easyContacts"
 
-# Instale o Composer
+# install composer(You need to have composer installed on your computer)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copie os arquivos da aplicação para o diretório web do Apache
 COPY . /var/www/html/
 
-# Copie os certificados SSL para os locais apropriados
+# Copy the certificates and key to apche conf
 COPY deploy/easycontacts.crt /etc/ssl/certs/easycontacts.crt
 COPY deploy/easycontacts.key /etc/ssl/private/easycontacts.key
 
-# Ajuste permissões
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod 600 /etc/ssl/private/easycontacts.key \
     && chmod 644 /etc/ssl/certs/easycontacts.crt
 
-# Configure o nome do servidor e habilite os módulos e o site SSL no Apache
+# enable some mods and change the path to the certs
 RUN a2enmod rewrite ssl \
     && a2ensite default-ssl \
     && sed -i 's|SSLCertificateFile.*|SSLCertificateFile /etc/ssl/certs/easycontacts.crt|' /etc/apache2/sites-available/default-ssl.conf \
     && sed -i 's|SSLCertificateKeyFile.*|SSLCertificateKeyFile /etc/ssl/private/easycontacts.key|' /etc/apache2/sites-available/default-ssl.conf 
 
-# Exponha as portas 80 e 443
+# open the http and https ports
 EXPOSE 80 443
 
-# Comando para iniciar o Apache
+# init apache
 CMD ["apache2-foreground"]
