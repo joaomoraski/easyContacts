@@ -21,7 +21,7 @@ class ContactControllerTest extends TestCase
         $contact->setEmail("john@doe.com");
         $contact->setPhone("0123456789");
         $contact->setTitle("Dad");
-        $contact->setCreated("2024-05-20 02:30:00");
+        $contact->setCreated("2024-05-20 02:30:02");
         return $contact;
     }
 
