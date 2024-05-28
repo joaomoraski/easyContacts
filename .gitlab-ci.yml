@@ -28,10 +28,16 @@ build-app:
     - docker push joaomoraski/easycontacts:latest
     - echo "Docker Push Ok!✅"
 
-unit-tests:
+unit-tests-logic:
   stage: test
   script:
-    - docker run --rm joaomoraski/easycontacts:latest ./vendor/bin/phpunit tests --testdox
+    - docker run --rm joaomoraski/easycontacts:latest ./vendor/bin/phpunit tests/contactTests --testdox
+    - echo "All tests passed!✅"
+
+unit-tests-utils:
+  stage: test
+  script:
+    - docker run --rm joaomoraski/easycontacts:latest ./vendor/bin/phpunit tests/utilsTests --testdox
     - echo "All tests passed!✅"
 
 deploy-prod:
@@ -40,8 +46,8 @@ deploy-prod:
     - chmod 400 $FILE_UBUNTU_RUNNER
     - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "docker login -u joaomoraski -p $DOCKER_HUB_ACCESS_TOKEN"
     - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "docker pull joaomoraski/easycontacts:latest"
-    - echo "Docker pull on server Ok!✅"
+    - echo "Docker pull on server Ok!"
     - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "docker stop easycontacts || true && docker rm easycontacts || true"
     - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "docker run -d --name easycontacts -p 80:80 -p 443:443 joaomoraski/easycontacts:latest"
-    - echo "Docker deploy on server Ok!✅"
+    - echo "Docker deploy on server Ok!"
   environment: production
