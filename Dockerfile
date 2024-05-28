@@ -16,6 +16,11 @@ RUN apt-get update && apt-get install -y \
     pdo_mysql \
     gd
 
+ENV DATABASE_HOST="sql.easycontacts.com"
+ENV DATABASE_USER="moraski"
+ENV DATABASE_PASSWORD="moraski"
+ENV DATABASE_NAME="easyContacts"
+
 # Instale o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

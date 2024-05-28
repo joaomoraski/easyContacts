@@ -14,7 +14,7 @@ class EnvReader
     {
         $envFilePath = __DIR__ . '/../.env'; // Caminho para o arquivo .env
         if ($example) {
-            $envFilePath .= '.exmaple';
+            $envFilePath .= '.example';
         }
 
         // Verificar se o arquivo .env existe
