@@ -42,10 +42,10 @@ class ContactControllerTest extends TestCase
                 "email" => "john@doe.com",
                 "phone" => "0123456789",
                 "title" => "Dad",
-                "created" => "2024-05-20 02:30:02"
+                "created" => "2024-05-20 02:30:00"
             ]
         );
-        $this->assertEquals($contactResult, $this->mountExpectedContact());
+        $this->assertEquals($this->mountExpectedContact(), $contactResult);
     }
 
 }
