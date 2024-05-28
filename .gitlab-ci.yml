@@ -42,6 +42,10 @@ unit-tests-utils:
 
 deploy-prod:
   stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: on_success
+    - when: never
   script:
     - chmod 400 $FILE_UBUNTU_RUNNER
     - ssh -i $FILE_UBUNTU_RUNNER -o "StrictHostKeyChecking No" ubuntu@web.easycontacts.com "docker login -u joaomoraski -p $DOCKER_HUB_ACCESS_TOKEN"
