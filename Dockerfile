@@ -33,7 +33,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod 644 /etc/ssl/certs/easycontacts.crt
 
 # Configure o nome do servidor e habilite os módulos e o site SSL no Apache
-RUN echo "www.easycontacts.com" >> /etc/apache2/apache2.conf \
+RUN echo "easycontacts.com" >> /etc/apache2/apache2.conf \
     && a2enmod rewrite ssl \
     && a2ensite default-ssl \
     && sed -i 's|SSLCertificateFile.*|SSLCertificateFile /etc/ssl/certs/easycontacts.crt|' /etc/apache2/sites-available/default-ssl.conf \
