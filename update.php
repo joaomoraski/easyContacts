@@ -8,16 +8,26 @@ use config\Connection;
 use controllers\ContactController;
 
 $response = [];
+$contactController = new ContactController();
+$contact = null;
+
 if (isset($_GET['id'])) {
     if (!empty($_POST)) {
-        $contactController = new ContactController();
         $response = $contactController->updateContact($_POST, $_GET['id']);
     }
+
+
     $connection = new Connection();
     $pdo = $connection->pdo_connect_mysql();
-    $stmt = $pdo->prepare('SELECT * FROM contacts WHERE id = ?');
-    $stmt->execute([$_GET['id']]);
-    $contact = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$pdo) {
+        $contact = $contactController->getContactById($_GET['id']);
+    } else {
+        $stmt = $pdo->prepare('SELECT * FROM contacts WHERE id = ?');
+        $stmt->execute([$_GET['id']]);
+        $contact = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    }
+
     if (!$contact) {
         exit('Contact doesn\'t exist with that ID!');
     }
@@ -69,6 +79,4 @@ if (isset($_GET['id'])) {
     </div>
 </div>
 
-
 <?= template_footer() ?>
-
